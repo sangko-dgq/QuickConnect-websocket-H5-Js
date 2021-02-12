@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<script src="js/mui.min.js"></script>
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link href="css/main.css" rel="stylesheet" />
+		
+		   <link rel="stylesheet" type="text/css" href="Login.css"/> 
+		   
+		<script type="text/javascript" charset="utf-8">
+			mui.init();
+		</script>
+	</head>
+	<body>
+		<li><a href="https://github.com/sangko-dgq"><img src="GitHub-Mark-Light-32px.png"/> &nbsp view in GitHub</a></li>
+<div id="login">
+	<h1>webscoket-connect</h1>  
+		<!-- view01 -->
+			<label id="label_RXmsg">...</label>
+		<!-- end -->
+		<div>&nbsp</div>
+		<!-- view02 -->
+		<div class="connect">
+			<input type="text" name="" id="websocket_input" value='ws://www.bigiot.net:8383' />
+			<button id="btn1">Connect</button>
+			<div>&nbsp</div>
+			<label id="label_1">WebSocket未连接!</label>
+		</div>
+		<!-- end -->
+		<div>&nbsp</div>
+		<!-- view03 -->
+		<div class="login">
+			<input type="text" name="" id="json_login_input" value='{"M":"checkin","ID":"20959","K":"6d2ac0601"}' />
+			<button id="btn2">SendJson</button>
+			<div>&nbsp</div>
+			<label id="label_2">App未与webscoket设备匹配登录!</label>
+		</div>
+		<!-- end -->
+</div>
+<!-- ************************************************************************************************** -->
+<!-- 
+    <div id="login">  
+        <h1>Connect+Login</h1>  
+        <form method="post">  
+            <input type="text" required="required" placeholder="用户名" name="u"></input>  
+            <input type="password" required="required" placeholder="密码" name="p"></input>  
+            <button class="but" type="submit">登录</button>  
+        </form>  
+    </div> -->
+
+<!-- ************************************************************************************************** -->
+
+
+
+
+
+
+
+
+
+
+		<!-- scripts -->
+		<script type="text/javascript">
+			//获取组件
+			var btn1 = document.getElementById("btn1");
+			var btn2 = document.getElementById("btn2");
+			var label_1 = document.getElementById("label_1");
+			var label_2 = document.getElementById("label_2");
+			var websocket_input = document.getElementById("websocket_input").value;
+			/***************************************建立通信************************************************************************/
+			//添加事件 点击 btn1
+			btn1.addEventListener("click", function() {
+				mui.toast("开始连接webscoket...");
+				//获取一个贝壳物联服务端
+				var ws = new WebSocket(websocket_input);
+				//链接成功触发(不包括登录)
+				ws.onopen = function() {
+					// Web Socket 已连接上
+					// label_1.innerText = "Web Socket 已连接上!";
+                    // ListenConWebscoket(); //调用监听
+				/***************************************连接监听(未登录前或登录后)**************/
+					var connect_state_num = ws.readyState;
+					alert("是否确认连接...");
+					switch (connect_state_num) {
+						case 0:
+							label_1.innerText = "连接尚未建立!";
+							break;
+						case 1:
+							label_1.innerText = "连接已建立，登录后可以进行通信!";
+							break;
+						case 2:
+							label_1.innerText = "连接正在进行关闭...";
+							break;
+						case 3:
+							label_1.innerText = "连接已经关闭或者连接不能打开!";
+							break;
+						default:
+							alert("error...")
+							break;
+					}
+				};
+				//服务器收到消息（包括json指令）后，触发
+				ws.onmessage = function(evt) {
+					var received_msg = evt.data;
+					label_RXmsg.innerText = received_msg;
+					var obj = JSON.parse(received_msg);
+					console.log(obj);
+					if (obj.M == "WELCOME TO BIGIOT") {
+						btn2.addEventListener("click", function() {
+							mui.toast("登录中。。。");
+							var json_login_input = document.getElementById("json_login_input").value;
+							ws.send(json_login_input);
+		        // ...................................
+								alert("是否确认登录？")
+								label_2.innerText = "设备匹配登录成功，允许通信！";
+						})
+					}
+				}
+			})
+
+		</script>
+	</body>
+</html>
