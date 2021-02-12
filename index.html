@@ -5,17 +5,27 @@
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<title></title>
 		<script src="js/mui.min.js"></script>
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+		
 		<link href="css/mui.min.css" rel="stylesheet" />
 		<link href="css/main.css" rel="stylesheet" />
-		
 		   <link rel="stylesheet" type="text/css" href="Login.css"/> 
 		   
 		<script type="text/javascript" charset="utf-8">
 			mui.init();
 		</script>
+		
 	</head>
 	<body>
-		<li><a href="https://github.com/sangko-dgq"><img src="GitHub-Mark-Light-32px.png"/> &nbsp view in GitHub</a></li>
+		<!-- ---------------------------------------------------------------------------------------- -->
+		  <!-- <div id="info"></div> -->
+		<!-- ---------------------------------------------------------------------------------------- -->
+		<div>&nbsp</div>
+		<ul>
+		<li><a href="https://mrdeng.netlify.app">MrDengBolg</a></li>
+		<li><a href="https://github.com/sangko-dgq"><img src="GitHub-Mark-Light-32px.png"/> &nbsp view in GitHub</a></li>	
+		</ul>
+		
 <div id="login">
 	<h1>webscoket-connect</h1>  
 		<!-- view01 -->
@@ -39,37 +49,51 @@
 			<label id="label_2">App未与webscoket设备匹配登录!</label>
 		</div>
 		<!-- end -->
+		<!-- view03 -->
+		<div class="send">
+			<input type="text" name="login" id="message_send_input" value="Hello user"/>
+			<button id="btn3">Send</button>
+			<div>&nbsp</div>
+			<label id="label_3">发送成功</label>
+		</div>
+		<!-- end -->
 </div>
 <!-- ************************************************************************************************** -->
 <!-- 
     <div id="login">  
         <h1>Connect+Login</h1>  
-        <form method="post">  
+        <form method="get">  
             <input type="text" required="required" placeholder="用户名" name="u"></input>  
             <input type="password" required="required" placeholder="密码" name="p"></input>  
             <button class="but" type="submit">登录</button>  
         </form>  
-    </div> -->
-
+		
+    </div>
+ -->
 <!-- ************************************************************************************************** -->
-
-
-
-
-
-
-
-
 
 
 		<!-- scripts -->
 		<script type="text/javascript">
+			
+			alert("由于数据库的调试升级，目前通信的值都只能为默认值，无法实时根据Input输入框，发送数据；请下载源码进行在代码里配置修改和功能拓展。")
+			//引入info,来传递变量
+			// $("#info").load("info.html");
+			
 			//获取组件
 			var btn1 = document.getElementById("btn1");
 			var btn2 = document.getElementById("btn2");
+			var btn3 = document.getElementById("btn3");
 			var label_1 = document.getElementById("label_1");
 			var label_2 = document.getElementById("label_2");
+			var label_3 = document.getElementById("label_3");
 			var websocket_input = document.getElementById("websocket_input").value;
+			var json_login_input = document.getElementById("json_login_input").value;
+			// var message_send_input = document.getElementById("message_send_input").value;
+			var message_send_input = $('#message_send_input').val();
+			alert($('#message_send_input').val());  
+			// alert(message_send_input);
+
 			/***************************************建立通信************************************************************************/
 			//添加事件 点击 btn1
 			btn1.addEventListener("click", function() {
@@ -111,11 +135,19 @@
 					if (obj.M == "WELCOME TO BIGIOT") {
 						btn2.addEventListener("click", function() {
 							mui.toast("登录中。。。");
-							var json_login_input = document.getElementById("json_login_input").value;
+                    
 							ws.send(json_login_input);
 		        // ...................................
 								alert("是否确认登录？")
 								label_2.innerText = "设备匹配登录成功，允许通信！";
+								
+								//....................................
+								btn3.addEventListener("click", function(){
+									alert("SEND:"+ "_"+ message_send_input +"_"+"SUCCESS!");
+									ws.send('{"M":"say","ID":"U14887","C":"'+message_send_input+'","SIGN":"xx3"}');
+
+								})
+								
 						})
 					}
 				}
